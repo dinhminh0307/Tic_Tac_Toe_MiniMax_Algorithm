@@ -5,6 +5,7 @@ char myTable[3][3] = {' ', ' ', ' ',
                       ' ', ' ', ' '};
 bool isPlayerWin = false;
 bool checkValidMove = false;
+int gameState = 0;
 
 void tableDisplay(char table[3][3]) {
     for(int i = 0; i < 3; i++) {
@@ -16,9 +17,6 @@ void tableDisplay(char table[3][3]) {
     std:: cout << "Enter your turn: " << "\n";
 }
 
-void computerTurn(char table[3][3]) {
-
-}
 void userTurn(char table[3][3]) {
     int row, column;
     tableDisplay(table);
@@ -42,14 +40,17 @@ bool checkGameOver(char table[3][3]) { // Bug is here the function always return
                 if(table[i][0] == 'X') {
                     isPlayerWin = true;
                     checkValidMove = true;
+                    gameState = 1;
                     return true;
                 }
                 else if(table[i][0] == ' ') {
                     checkValidMove = false;
+                    gameState = 0;
                 }
                 else {
                     isPlayerWin = false;
                     checkValidMove = true;
+                    gameState = -1;
                     return true;
                 }
             }
@@ -57,13 +58,16 @@ bool checkGameOver(char table[3][3]) { // Bug is here the function always return
                 if(table[i][0] == 'X') {
                     isPlayerWin = true;
                     checkValidMove = true;
+                    gameState = 1;
                     return true;
                 }
                 else if(table[i][0] == ' ') {
                     checkValidMove = false;
+                    gameState = 0;
                 }
                 else {
                     isPlayerWin = false;
+                    gameState = -1;
                     checkValidMove = true;
                     return true;
                 }
@@ -72,14 +76,17 @@ bool checkGameOver(char table[3][3]) { // Bug is here the function always return
                 if(table[i][1] == 'X') {
                     isPlayerWin = true;
                     checkValidMove = true;
+                    gameState = 1;
                     return true;
                 }
                 else if(table[i][1] == ' ') {
+                    gameState = 0;
                     checkValidMove = false;
                 }
                 else {
                     isPlayerWin = false;
                     checkValidMove = true;
+                    gameState = -1;
                     return true;
                 }
             }
@@ -87,6 +94,7 @@ bool checkGameOver(char table[3][3]) { // Bug is here the function always return
                 if(table[i][2] == 'X') {
                     isPlayerWin = true;
                     checkValidMove = true;
+                    gameState = 1;
                     return true;
                 }
                 else if(table[i][2] == ' ') {
@@ -94,6 +102,7 @@ bool checkGameOver(char table[3][3]) { // Bug is here the function always return
                 }
                 else {
                     isPlayerWin = false;
+                    gameState = -1;
                     checkValidMove = true;
                     return true;
                 }
@@ -102,6 +111,7 @@ bool checkGameOver(char table[3][3]) { // Bug is here the function always return
                 if(table[i][0] == 'X') {
                     isPlayerWin = true;
                     checkValidMove = true;
+                    gameState = 1;
                     return true;
                 }
                 else if(table[i][0] == ' ') {
@@ -110,21 +120,86 @@ bool checkGameOver(char table[3][3]) { // Bug is here the function always return
                 else {
                     isPlayerWin = false;
                     checkValidMove = true;
+                    gameState = -1;
                     return true;
                 }
             }
             else if(table[i][2] == table[i + 1][1] && table[i][2] == table[i +2][0]) {
                 if(table[i][0] == 'X') {
                     isPlayerWin = true;
+                    gameState = 1;
                     return true;
                 }
                 else {
                     isPlayerWin = false;
+                    gameState = -1;
                     return true;
                 }
             }
         }
+    gameState = 0;
     return false;
+}
+
+int getMaxValue(int bestVal, int miniMaxVal) {
+    if(bestVal < miniMaxVal) {
+        return miniMaxVal;
+    }
+    else {
+        return bestVal;
+    }
+}
+
+int computerMiniMax(char table[3][3], bool isPlayerMove) {
+    // Minimax function
+    checkGameOver(table);
+    if(gameState == 1) {
+        return gameState;
+    }
+    else if(gameState == -1) {
+        return gameState;
+    }
+    else if(gameState == 0) {
+        return gameState;
+    }
+    if(isPlayerMove) {
+        int bestVal = -1000;
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                if(table[i][j] == ' ') {
+                    table[i][j] = 'X';
+                    int val = computerMiniMax(table, !isPlayerMove);
+                    bestVal = getMaxValue(bestVal, val);
+                    table[i][j] = ' ';
+                }
+            }
+        }
+        return bestVal;
+    }
+    else {
+        int bestVal = 1000;
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                if(table[i][j] == ' ') {
+                    table[i][j] = 'O';
+                    int val = computerMiniMax(table, !isPlayerMove);
+                    bestVal = getMaxValue(bestVal, val);
+                    table[i][j] = ' ';
+                }
+            }
+        }
+        return bestVal;
+    }
+}
+
+void computerTurn(char table[3][3]) {
+    // This function to take the move
+    int row, col;
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+
+        }
+    }
 }
 
 void game(char table[3][3]) {
