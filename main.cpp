@@ -24,6 +24,13 @@ void userTurn(char table[3][3]) {
     table[row][column] = 'X';
 }
 
+void secondPlayerTurn(char table[3][3]) {
+    int row, column;
+    tableDisplay(table);
+    std::cin >> row >> column;
+    table[row][column] = 'O';
+}
+
 bool checkMoveLeft(char table[3][3]) {
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
@@ -34,7 +41,7 @@ bool checkMoveLeft(char table[3][3]) {
     }
     return false;
 }
-bool checkGameOver(char table[3][3]) { // Bug is here the function always returns true
+bool checkGameOver(char table[3][3]) {
     for(int i = 0; i < 3; i++) {
             if(table[i][0] == table[i][1] && table[i][1] == table[i][2]) {
                 if(table[i][0] == 'X') {
@@ -194,12 +201,26 @@ int computerMiniMax(char table[3][3], bool isPlayerMove) {
 
 void computerTurn(char table[3][3]) {
     // This function to take the move
-    int row, col;
+    int row = 0;
+    int col = 0;
+    int score = -1000;
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
-
+            for(int j = 0; j < 3;j++) {
+                if(table[i][j] == ' ') {
+                    table[i][j] = 'X';
+                    int currentMove = computerMiniMax(table, false);
+                    table[i][j] = ' ';
+                    if(currentMove > score) {
+                        score = currentMove;
+                        row = i;
+                        col = j;
+                    }
+                }
+            }
         }
     }
+    table[row][col] = 'O';
 }
 
 void game(char table[3][3]) {
@@ -222,7 +243,7 @@ void game(char table[3][3]) {
             }
             else {
                 userTurn(table);
-            // computerTurn(table);
+                computerTurn(table);
             }
         }
         else {
@@ -243,14 +264,63 @@ void game(char table[3][3]) {
     }
 } 
 
+void twoPlayerMode(char table[3][3]) {
+    while(1) {
+        if(checkMoveLeft(table)) { // For full table and 1 of the two players win
+            if(checkGameOver(table)) {
+                if(checkValidMove) {
+                    if(isPlayerWin) {
+                        std:: cout << "Game Over! and Player1 Win!" << std::endl;
+                    }
+                    else {
+                        std::cout << "Game Over! and Player2 Win" << std::endl;
+                    }
+                }
+                else {
+                    continue;
+                }
+            }
+            else {
+                userTurn(table);
+                if(checkGameOver(table)) { // When there is not full table and 1 of the players win
+                    if(isPlayerWin) {
+                        std:: cout << "Game Over! and Player1 Win!" << std::endl;
+                        break;
+                    }
+                    else {
+                        std::cout << "Game Over! and Player2 Win" << std::endl;
+                        break;
+                    }
+                }
+                secondPlayerTurn(table);
+            }
+        }
+        else {
+            if(checkGameOver) {
+                    if(isPlayerWin) {
+                        std:: cout << "Game Over! and Player1 Win!" << std::endl;
+                    }
+                    else {
+                        std::cout << "Game Over! and Player2 Win" << std::endl;
+                    }
+                    break;
+                }
+                else {
+                    std:: cout << "Game Over! and Draw" << std::endl;
+                    break;
+                }
+        }
+    }
+    // std::cout << "Game Over" << std::endl;
+}
+
 void menuPromptMessage() {
     std::cout << "----------------------------" << std::endl;
     std::cout << "|     Tic Tac Toe Game!     |" << std::endl;
     std::cout << "-----------------------------" << std::endl;
     std::cout << ">>> Made by Dinh Minh" << std::endl;
-    std::cout << ">>> Version 1.0.0" << std::endl;
-    std::cout << "Press 1 to continue >>>>" << std::endl;
-    std::cout << "Press 2 to exit>>>>>" << std::endl;
+    std::cout << "Press 1 to Play with computer >>>>" << std::endl;
+    std::cout << "Press 2 to Play with 2 players mode >>>>>" << std::endl;
 }
 void menu(char table[3][3]) {
     int choice;
@@ -267,10 +337,10 @@ void menu(char table[3][3]) {
         game(table);
     }
     else if(choice == 2) {
-
+        twoPlayerMode(table);
     }
 }
+
 int main(void) {
-    
     menu(myTable);
 }
