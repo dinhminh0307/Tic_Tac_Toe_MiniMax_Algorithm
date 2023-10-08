@@ -1,9 +1,10 @@
 #include <iostream>
 
-char myTable[3][3] = {'X', 'O', 'O',
-                      'O', 'X', 'X',
-                      'X', 'O', 'O'};
+char myTable[3][3] = {' ', ' ', ' ',
+                      ' ', ' ', ' ',
+                      ' ', ' ', ' '};
 bool isPlayerWin = false;
+bool checkValidMove = false;
 
 void tableDisplay(char table[3][3]) {
     for(int i = 0; i < 3; i++) {
@@ -25,72 +26,144 @@ void userTurn(char table[3][3]) {
     table[row][column] = 'X';
 }
 
-bool checkGameOver(char table[3][3]) { // Bug is here the function always returns true
+bool checkMoveLeft(char table[3][3]) {
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
-            if(table[i][j] == table[i][j + 1] && table[i][j + 1] == table[i][j + 2]) {
-                if(table[i][j] == 'X') {
-                    isPlayerWin = true;
-                    return true;
-                }
-                else {
-                    isPlayerWin = false;
-                    return true;
-                }
+            if(table[i][j] == ' ') {
+                return true;
             }
-            else if(table[i][j] == table[i +1][j] && table[i][j] == table[i+2][j]) {
-                if(table[i][j] == 'X') {
-                    isPlayerWin = true;
-                    return true;
-                }
-                else {
-                    isPlayerWin = false;
-                    return true;
-                }
-            }
-            else if(table[i][j] == table[i +1][j + 1] && table[i][j] == table[i + 2][j + 2]) {
-                if(table[i][j] == 'X') {
-                    isPlayerWin = true;
-                    return true;
-                }
-                else {
-                    isPlayerWin = false;
-                    return true;
-                }
-            }
-            if(i == 0 && j == 2) {
-                if(table[i][j] == table[i + 1][j - 1] && table[i][j] == table[i + 2][j - 2]) {
-                    if(table[i][j] == 'X') {
-                        isPlayerWin = true;
-                        return true;
-                    }
-                    else {
-                        isPlayerWin = false;
-                        return true;
-                    }
-                }
-            }
-            continue;
         }
     }
+    return false;
+}
+bool checkGameOver(char table[3][3]) { // Bug is here the function always returns true
+    for(int i = 0; i < 3; i++) {
+            if(table[i][0] == table[i][1] && table[i][1] == table[i][2]) {
+                if(table[i][0] == 'X') {
+                    isPlayerWin = true;
+                    checkValidMove = true;
+                    return true;
+                }
+                else if(table[i][0] == ' ') {
+                    checkValidMove = false;
+                }
+                else {
+                    isPlayerWin = false;
+                    checkValidMove = true;
+                    return true;
+                }
+            }
+            else if(table[i][0] == table[i +1][0] && table[i][0] == table[i+2][0]) {
+                if(table[i][0] == 'X') {
+                    isPlayerWin = true;
+                    checkValidMove = true;
+                    return true;
+                }
+                else if(table[i][0] == ' ') {
+                    checkValidMove = false;
+                }
+                else {
+                    isPlayerWin = false;
+                    checkValidMove = true;
+                    return true;
+                }
+            }
+            else if(table[i][1] == table[i +1][1] && table[i][1] == table[i + 2][1]) {
+                if(table[i][1] == 'X') {
+                    isPlayerWin = true;
+                    checkValidMove = true;
+                    return true;
+                }
+                else if(table[i][1] == ' ') {
+                    checkValidMove = false;
+                }
+                else {
+                    isPlayerWin = false;
+                    checkValidMove = true;
+                    return true;
+                }
+            }
+            else if(table[i][2] == table[i +1][2] && table[i][2] == table[i + 2][2]) {
+                if(table[i][2] == 'X') {
+                    isPlayerWin = true;
+                    checkValidMove = true;
+                    return true;
+                }
+                else if(table[i][2] == ' ') {
+                    checkValidMove = false;
+                }
+                else {
+                    isPlayerWin = false;
+                    checkValidMove = true;
+                    return true;
+                }
+            }
+            else if(table[i][0] == table[i + 1][1] && table[i][0] == table[i + 2][2]) {
+                if(table[i][0] == 'X') {
+                    isPlayerWin = true;
+                    checkValidMove = true;
+                    return true;
+                }
+                else if(table[i][0] == ' ') {
+                    checkValidMove = false;
+                }
+                else {
+                    isPlayerWin = false;
+                    checkValidMove = true;
+                    return true;
+                }
+            }
+            else if(table[i][2] == table[i + 1][1] && table[i][2] == table[i +2][0]) {
+                if(table[i][0] == 'X') {
+                    isPlayerWin = true;
+                    return true;
+                }
+                else {
+                    isPlayerWin = false;
+                    return true;
+                }
+            }
+        }
     return false;
 }
 
 void game(char table[3][3]) {
     while(1) {
         // std:: cout << checkGameOver(table);
-        if(checkGameOver(table)) {
-            if(isPlayerWin) {
-                std::cout << "Game Over! and Player Win!" << std::endl;
+        if(checkMoveLeft(table)) {
+            if(checkGameOver(table)) {
+                if(checkValidMove) {
+                    if(isPlayerWin) {
+                        std::cout << "Game Over! and Player Win!" << std::endl;
+                    }
+                    else {
+                        std::cout << "Game Over! and Computer Win!" << std::endl;
+                    }
+                    break;
+                }
+                else {
+                    continue;
+                }
             }
             else {
-                std::cout << "Game Over! and Computer Win!" << std::endl;
+                userTurn(table);
+            // computerTurn(table);
             }
-            break;
         }
         else {
-            userTurn(table);
-            // computerTurn(table);
+            if(checkGameOver(table)) {
+                if(isPlayerWin) {
+                    std::cout << "Game Over! and Player Win!" << std::endl;
+                }
+                else {
+                    std::cout << "Game Over! and Computer Win!" << std::endl;
+                }
+                break;
+            }
+            else {
+                std::cout << "Game Over! and No one Win!" << std::endl;
+                break;
+            }
         }
     }
 } 
